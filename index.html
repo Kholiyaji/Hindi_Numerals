@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hindi Numbers 0 to 9</title>
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --surface: #ffffff;
+      --ink: #14213d;
+      --muted: #55627a;
+      --accent: #e8a317;
+      --accent-ink: #14213d;
+      --line: #d3dbe8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+    h1 {
+      font-size: clamp(2.3rem, 5vw, 3.2rem);
+      margin: 0 0 8px;
+      text-align: center;
+    }
+    .sub {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .card {
+      width: 100%;
+      padding: 18px 12px;
+      border-radius: 18px;
+      border: 1.5px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .dev {
+      font-size: clamp(2.5rem, 8vw, 4.2rem);
+      line-height: 1.1;
+      margin-bottom: 4px;
+      font-family: "Noto Serif Devanagari", "Tiro Devanagari Hindi", serif;
+    }
+    .word {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+    .say {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .en {
+      margin-top: 8px;
+      min-width: 3rem;
+      background: var(--bg);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 700;
+    }
+    .zero {
+      grid-column: 1 / -1;
+    }
+    .card.show .en {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+    @media (min-width: 560px) {
+      .grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>हिंदी अंक<br>Hindi numbers 0 to 9</h1>
+    <p class="sub">Tap any card to hear it. Learn all ten in two minutes.</p>
+
+    <ul class="grid" id="grid"></ul>
+  </main>
+
+  <script>
+    const data = [
+      ["०", "शून्य", "shunya", 0],
+      ["१", "एक", "ek", 1],
+      ["२", "दो", "do", 2],
+      ["३", "तीन", "teen", 3],
+      ["४", "चार", "chaar", 4],
+      ["५", "पाँच", "paanch", 5],
+      ["६", "छह", "chhah", 6],
+      ["७", "सात", "saat", 7],
+      ["८", "आठ", "aath", 8],
+      ["९", "नौ", "nau", 9]
+    ];
+
+    const grid = document.getElementById("grid");
+
+    data.forEach(([d, w, s, n]) => {
+      const li = document.createElement("li");
+      if (n === 0) li.className = "zero";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "card";
+      button.setAttribute("aria-label", `${n} in Hindi: ${s}`);
+      button.innerHTML = `
+        <span class="dev">${d}</span>
+        <span class="word">${w}</span>
+        <span class="say">${s}</span>
+        <span class="en">${n}</span>
+      `;
+
+      button.addEventListener("click", () => {
+        button.classList.add("show");
+        try {
+          if ("speechSynthesis" in window) {
+            speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(w);
+            utterance.lang = "hi-IN";
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+          }
+        } catch (e) {
+          console.log("Speech not supported", e);
+        }
+      });
+
+      li.appendChild(button);
+      grid.appendChild(li);
+    });
+  </script>
+</body>
+</html>
